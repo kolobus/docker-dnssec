@@ -5,6 +5,7 @@ COPY entrypoint.sh /entrypoint.sh
 
 RUN apk add bind
 RUN apk add bind-tools
+RUN apk add bash
 
 RUN chown named: /etc/bind/named.conf
 RUN chmod +x /entrypoint.sh
