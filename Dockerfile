@@ -6,9 +6,10 @@ RUN apk add --no-cache bind-tools
 RUN apk add --no-cache bash
 RUN apk add --no-cache python3
 RUN pip3 install --upgrade pip
-RUN apk add --no-cache git
-RUN git clone https://github.com/mfs/mkzone.git /mkzone
-RUN apk del git
+RUN pip3 install --upgrade jinja2
+RUN pip3 install --upgrade pyyaml
+RUN wget https://raw.githubusercontent.com/mfs/mkzone/master/mkzone -O /mkzone
+RUN chmod +x /mkzone
 
 # copy config and set permissions
 COPY named.conf /etc/bind/named.conf
