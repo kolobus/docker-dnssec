@@ -4,6 +4,8 @@
 # 	dnssec-keygen -a NSEC3RSASHA1 -b 2048 -n ZONE $main_domain
 # fi
 
+echo $DNSSEC
+
 # replace recursion ip
 sed -i -E "s|<ALLOW_RECURSION_IP>|${ALLOW_RECURSION_IP}|g" /etc/bind/named.conf
 
@@ -13,6 +15,16 @@ for var in $(compgen -A variable | grep -E 'FORWARDER_[0-9]{1,3}'); do
 	FORWARDER="${FORWARDER}\t\t${!var};\n"
 done
 sed -i -E "s|<FORWARDER>|${FORWARDER}|g" /etc/bind/named.conf
+
+DNSSEC_STRING=''
+if [ $DNSSEC = "true" ]
+then
+	DNSSEC_STRING="${DNSSEC_STRING}\tdnssec-enable yes;\n"
+	DNSSEC_STRING="${DNSSEC_STRING}\tdnssec-validation yes;\n"
+	DNSSEC_STRING="${DNSSEC_STRING}\tdnssec-lookaside auto;\n"
+fi
+
+sed -i -E "s|<DNSSEC>|${DNSSEC_STRING}|g" /etc/bind/named.conf
 
 mkdir -p /var/bind/zones
 mkdir -p /etc/bind/zones-enabled
@@ -32,8 +44,25 @@ then
 
 		# include zone config
 		echo "include \"/etc/bind/zones-enabled/${domain}.conf.zone\";" >> /etc/bind/named.conf
-		echo $zonefile
-		echo $domain
+
+		# create zone signing key
+		if [ $DNSSEC = "true" ]
+		then
+			cd /var/bind/zones
+			dnssec-keygen -a NSEC3RSASHA1 -b 2048 -n ZONE ${domain}
+			dnssec-keygen -f KSK -a NSEC3RSASHA1 -b 4096 -n ZONE ${domain}
+
+			for key in `ls K${domain}*.key`
+			do
+				echo "\$INCLUDE $key">> ${domain}.zone
+			done
+
+			dnssec-signzone -3 7d70b91db47137cd -A -N INCREMENT -o ${domain} -t ${domain}.zone
+
+			# use signed zone file now
+			sed -i -E "s|file \"zones/${domain}.zone\";|file \"zones/${domain}.zone.signed\";|g" /etc/bind/zones-enabled/${domain}.conf.zone
+			cd -
+		fi
 	done
 fi
 

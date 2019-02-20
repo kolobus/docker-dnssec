@@ -5,6 +5,7 @@ RUN apk add --no-cache bind
 RUN apk add --no-cache bind-tools
 RUN apk add --no-cache bash
 RUN apk add --no-cache python3
+RUN apk add --no-cache haveged
 RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade jinja2
 RUN pip3 install --upgrade pyyaml
@@ -27,6 +28,8 @@ EXPOSE 53/udp
 ENV ALLOW_RECURSION_IP=172.17.0.0/24
 ENV FORWARDER_1=208.67.222.222
 ENV FORWARDER_2=208.67.220.220
+ENV DNSSEC=true
+ENV SALT=7d70b91db47137cd
 
 #USER named
 
