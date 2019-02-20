@@ -14,7 +14,6 @@ RUN chmod +x /mkzone
 # copy config and set permissions
 COPY named.conf /etc/bind/named.conf
 COPY named.conf.default-zones /etc/bind/named.conf.default-zones
-COPY named.conf.zones /etc/bind/named.conf.zones
 COPY entrypoint.sh /entrypoint.sh
 
 RUN chown named: /etc/bind/named.conf*
