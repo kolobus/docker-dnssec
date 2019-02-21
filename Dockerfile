@@ -13,11 +13,10 @@ RUN wget https://raw.githubusercontent.com/mfs/mkzone/master/mkzone -O /mkzone
 RUN chmod +x /mkzone
 
 # copy config and set permissions
-COPY named.conf /etc/bind/named.conf
-COPY named.conf.default-zones /etc/bind/named.conf.default-zones
-COPY entrypoint.sh /entrypoint.sh
+COPY --chown=named:named named.conf /etc/bind/named.conf
+COPY --chown=named:named named.conf.default-zones /etc/bind/named.conf.default-zones
+COPY --chown=named:named entrypoint.sh /entrypoint.sh
 
-RUN chown named: /etc/bind/named.conf*
 RUN chmod +x /entrypoint.sh
 
 # ports exposed

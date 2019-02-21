@@ -26,6 +26,7 @@ fi
 
 sed -i -E "s|<DNSSEC>|${DNSSEC_STRING}|g" /etc/bind/named.conf
 
+mkdir -p /var/bind/keys
 mkdir -p /var/bind/zones
 mkdir -p /etc/bind/zones-enabled
 if [ -d "/domains" ]
@@ -48,16 +49,34 @@ then
 		# create zone signing key
 		if [ $DNSSEC = "true" ]
 		then
-			cd /var/bind/zones
-			dnssec-keygen -a NSEC3RSASHA1 -b 2048 -n ZONE ${domain}
-			dnssec-keygen -f KSK -a NSEC3RSASHA1 -b 4096 -n ZONE ${domain}
+			cd /var/bind/keys
+			# zone signing key
+			grep "This is a zone-signing key" ./K${domain}.*.key
+			if [ $? != 0 ]
+			then
+				dnssec-keygen -a NSEC3RSASHA1 -b 2048 -n ZONE ${domain}
+			fi
 
-			for key in `ls K${domain}*.key`
+			# key signing key
+			grep "This is a key-signing key" ./K${domain}.*.key
+			if [ $? != 0 ]
+			then
+				dnssec-keygen -f KSK -a NSEC3RSASHA1 -b 4096 -n ZONE ${domain}
+			fi
+
+			# include keys
+			for key in `ls K${domain}.*.key`
 			do
-				echo "\$INCLUDE $key">> ${domain}.zone
+				echo "\$INCLUDE /var/bind/keys/${key}">> /var/bind/zones/${domain}.zone
 			done
+			cd -
 
-			dnssec-signzone -3 7d70b91db47137cd -A -N INCREMENT -o ${domain} -t ${domain}.zone
+			# sign zone
+			cd /var/bind/zones
+			if [ ! -f ${domain}.zone.signed ]
+			then
+				dnssec-signzone -3 7d70b91db47137cd -A -N INCREMENT -K /var/bind/keys -o ${domain} -t ${domain}.zone
+			fi
 
 			# use signed zone file now
 			sed -i -E "s|file \"zones/${domain}.zone\";|file \"zones/${domain}.zone.signed\";|g" /etc/bind/zones-enabled/${domain}.conf.zone
