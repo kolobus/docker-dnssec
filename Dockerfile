@@ -1,12 +1,9 @@
-FROM alpine:latest
+FROM walser/python:latest
 
 # install needed packages
 RUN apk add --no-cache bind
 RUN apk add --no-cache bind-tools
-RUN apk add --no-cache bash
-RUN apk add --no-cache python3
 RUN apk add --no-cache haveged
-RUN pip3 install --upgrade pip
 RUN pip3 install --upgrade jinja2
 RUN pip3 install --upgrade pyyaml
 RUN wget https://raw.githubusercontent.com/mfs/mkzone/master/mkzone -O /mkzone
