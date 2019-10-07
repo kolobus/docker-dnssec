@@ -6,7 +6,7 @@ RUN apk add --no-cache bind-tools
 RUN apk add --no-cache haveged
 RUN pip3 install --upgrade jinja2
 RUN pip3 install --upgrade pyyaml
-RUN wget https://raw.githubusercontent.com/mfs/mkzone/master/mkzone -O /mkzone
+RUN wget https://raw.githubusercontent.com/claudio-walser/mkzone/master/mkzone -O /mkzone
 RUN chmod +x /mkzone
 
 # copy config and set permissions
