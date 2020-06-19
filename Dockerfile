@@ -3,6 +3,7 @@ FROM quay.io/net-sec/python:latest
 # install needed packages
 RUN apk add --no-cache bind
 RUN apk add --no-cache bind-tools
+RUN apk add --no-cache bind-dnssec-tools
 RUN apk add --no-cache haveged
 RUN pip3 install --upgrade jinja2
 RUN pip3 install --upgrade pyyaml
