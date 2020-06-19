@@ -1,4 +1,4 @@
-FROM walser/python:latest
+FROM quay.io/net-sec/python:latest
 
 # install needed packages
 RUN apk add --no-cache bind
