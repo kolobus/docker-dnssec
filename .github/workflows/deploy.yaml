@@ -1,12 +1,14 @@
 name: Deploy
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
+
+  repository_dispatch:
+    types: [trigger-python-container-build]
 jobs:
 
   build-and-push:
     runs-on: ubuntu-latest
-    # needs: debug
     steps:
       - uses: actions/checkout@v3
       - name: Buildah Build
@@ -21,6 +23,46 @@ jobs:
         with:
           image: ${{ vars.QUAY_REPO }}/dnssec
           tags: latest
-          registry: ${{ vars.QUAY_REGISTRY }} #quay.io/net-sec
-          username: ${{ vars.QUAY_REGISTRY_USER }} #claudio_walser
+          registry: ${{ vars.QUAY_REGISTRY }}
+          username: ${{ vars.QUAY_REGISTRY_USER }}
           password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
+
+
+
+
+
+  # trigger https://github.com/net-sec/docker-alpine/actions/workflows/deploy.yaml
+  trigger-alpine-build:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Dispatch alpine build
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GLOBAL_GITHUB_ACCESS_TOKEN }}
+          repository: net-sec/docker-alpine
+          event-type: trigger-dnssec-container-build
+
+  # trigger https://github.com/net-sec/docker-dnssec/actions/workflows/deploy.yaml
+  trigger-python-build:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Dispatch python build
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GLOBAL_GITHUB_ACCESS_TOKEN }}
+          repository: net-sec/docker-python
+          event-type: trigger-dnssec-container-build
+
+  # trigger https://github.com/net-sec/docker-keepalived/actions/workflows/deploy.yaml
+  trigger-keepalived-build:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Dispatch keepalived build
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GLOBAL_GITHUB_ACCESS_TOKEN }}
+          repository: net-sec/docker-keepalived
+          event-type: trigger-dnssec-container-build
