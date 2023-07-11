@@ -75,7 +75,7 @@ then
 			cd /var/bind/zones
 			if [ ! -f ${domain}.zone.signed ]
 			then
-				dnssec-signzone -3 7d70b91db47137cd -A -N INCREMENT -K /var/bind/keys -o ${domain} -t ${domain}.zone
+				dnssec-signzone -3 $SALT -A -N INCREMENT -K /var/bind/keys -o ${domain} -t ${domain}.zone
 			fi
 
 			# use signed zone file now
