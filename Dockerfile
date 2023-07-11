@@ -16,6 +16,7 @@ COPY --chown=named:named named.conf.default-zones /etc/bind/named.conf.default-z
 COPY --chown=named:named entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
+RUN chown -R named: /var/bind /etc/bind
 
 # ports exposed
 EXPOSE 53/tcp
@@ -28,6 +29,6 @@ ENV FORWARDER_2=208.67.220.220
 ENV DNSSEC=true
 ENV SALT=7d70b91db47137cd
 
-#USER named
+USER named
 
 ENTRYPOINT ["/entrypoint.sh"]

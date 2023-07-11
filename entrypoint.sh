@@ -85,8 +85,8 @@ then
 	done
 fi
 
-chown -R named: /var/bind/zones
-chown -R named: /etc/bind/zones-enabled
+#chown -R named: /var/bind/zones
+#chown -R named: /etc/bind/zones-enabled
 
 # start named with given config
-/usr/sbin/named -f -u named -c /etc/bind/named.conf
+/usr/sbin/named -f -c /etc/bind/named.conf
