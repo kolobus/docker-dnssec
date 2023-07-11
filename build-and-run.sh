@@ -1,10 +1,10 @@
 #!/bin/bash
 
-docker build --rm -t net-sec/dns ./
-docker rm -f dns
+docker build --rm -t net-sec/dnssec ./
+docker rm -f dnssec
 docker run -itd \
-	-v $(pwd)/../coreos-ignitions/domains:/domains \
+	-v $(pwd)/exampleDomains:/domains \
 	-v $(pwd)/domainKeys:/var/bind/keys \
 	-p 53:53/tcp \
 	-p 53:53/udp \
-	--name dns net-sec/dns
+	--name dnssec net-sec/dnssec
