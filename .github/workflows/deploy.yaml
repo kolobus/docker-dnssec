@@ -1,0 +1,26 @@
+name: Deploy
+on:
+  push:
+    branches: [ main, master ]
+jobs:
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    # needs: debug
+    steps:
+      - uses: actions/checkout@v3
+      - name: Buildah Build
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ vars.QUAY_REPO }}/dnssec
+          tags: latest
+          containerfiles: |
+            ./Dockerfile
+      - name: Push To quay.io
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ vars.QUAY_REPO }}/dnssec
+          tags: latest
+          registry: ${{ vars.QUAY_REGISTRY }} #quay.io/net-sec
+          username: ${{ vars.QUAY_REGISTRY_USER }} #claudio_walser
+          password: ${{ secrets.QUAY_REGISTRY_PASSWORD }}
