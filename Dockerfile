@@ -15,12 +15,15 @@ COPY --chown=named:named named.conf /etc/bind/named.conf
 COPY --chown=named:named named.conf.default-zones /etc/bind/named.conf.default-zones
 COPY --chown=named:named entrypoint.sh /entrypoint.sh
 
+# make entrypoint executable
 RUN chmod +x /entrypoint.sh
+# setup permissions to run bind in user space (and still bind to port 53)
 RUN chown -R named: /var/bind /etc/bind
+#RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/named
 
 # ports exposed
-EXPOSE 53/tcp
-EXPOSE 53/udp
+EXPOSE 5353/tcp
+EXPOSE 5353/udp
 
 # default environment variables
 ENV ALLOW_RECURSION_IP=172.17.0.0/24
