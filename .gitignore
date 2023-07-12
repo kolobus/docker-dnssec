@@ -1,0 +1,5 @@
+domainKeys/*
+!domainKeys/.keep
+
+exampleDomains/*
+!exampleDomains/example.com.yaml
