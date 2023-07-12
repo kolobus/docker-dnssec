@@ -12,6 +12,6 @@ podman run -itd \
 	-v $(pwd)/exampleDomains:/domains:ro \
 	-v $(pwd)/domainKeys:/var/bind/keys:z \
     -e SALT=4aa69cc7a5d54175 \
-    -e DNSSEC=false \
+    -e DNSSEC=true \
 	-p 5353:53 \
 	--name dnssec net-sec/dnssec
