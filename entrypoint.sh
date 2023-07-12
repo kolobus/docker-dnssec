@@ -19,9 +19,7 @@ sed -i -E "s|<FORWARDER>|${FORWARDER}|g" /etc/bind/named.conf
 DNSSEC_STRING=''
 if [ $DNSSEC = "true" ]
 then
-	DNSSEC_STRING="${DNSSEC_STRING}\tdnssec-enable yes;\n"
 	DNSSEC_STRING="${DNSSEC_STRING}\tdnssec-validation yes;\n"
-	DNSSEC_STRING="${DNSSEC_STRING}\tdnssec-lookaside auto;\n"
 fi
 
 sed -i -E "s|<DNSSEC>|${DNSSEC_STRING}|g" /etc/bind/named.conf
@@ -85,8 +83,11 @@ then
 	done
 fi
 
-#chown -R named: /var/bind/zones
-#chown -R named: /etc/bind/zones-enabled
+chown -R named: /var/bind/zones
+chown -R named: /etc/bind/zones-enabled
 
 # start named with given config
-/usr/sbin/named -f -c /etc/bind/named.conf
+/usr/sbin/named -f -u named -c /etc/bind/named.conf
+
+
+sleep 500000
