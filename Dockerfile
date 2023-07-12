@@ -17,18 +17,17 @@ COPY --chown=named:named entrypoint.sh /entrypoint.sh
 
 # make entrypoint executable
 RUN chmod +x /entrypoint.sh
-# setup permissions to run bind in user space (and still bind to port 53)
+# setup permissions to run bind in user space
 RUN chown -R named: /var/bind /etc/bind
-#RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/named
 
 # ports exposed
 EXPOSE 5353/tcp
 EXPOSE 5353/udp
 
 # default environment variables
-ENV ALLOW_RECURSION_IP=172.17.0.0/24
-ENV FORWARDER_1=208.67.222.222
-ENV FORWARDER_2=208.67.220.220
+ENV ALLOW_RECURSION_IP=10.0.2.0/24
+ENV FORWARDER_1=208.67.222.123
+ENV FORWARDER_2=208.67.220.123
 ENV DNSSEC=true
 ENV SALT=7d70b91db47137cd
 
