@@ -5,7 +5,7 @@ This fork adds DN42 env variable, which includes conf options essential for DN42
 
 Changes:
 
-- DN42=true will include DNSEC options required for DN42 and corresponding zones
+- DN42=true will include DNSSEC options required for DN42 and corresponding zones
 - Modified mkzone file to add SRV records, which is now in a separate repo
 - Changed default resolvers to CloudFlare IPv4/IPv6
 - Upgraded python3 packages to correct (new) system-wide install
@@ -28,7 +28,7 @@ Env Variables
 +--------------------+---------------------------------------------------------------------------------------+------------------+
 | Name               | Description                                                                           | Default Value    |
 +--------------------+---------------------------------------------------------------------------------------+------------------+
-| ALLOW_RECURSION_IP | IP Source Range where you allow recursive queries from. Defaults to podman network.   | 10.0.2.0/24      |
+| ALLOW_RECURSION_IP | IP Source Range where you allow recursive queries from.                               | 10.0.0.0/8       |
 +--------------------+---------------------------------------------------------------------------------------+------------------+
 | FORWARDER_[0-9]    | DNS Server you want to forward unknown requests to. Up to 9 upstream servers possible.| 208.67.222.123   |
 |                    | Defaults to Servers from https://www.opendns.com/                                     | 208.67.220.123   |
