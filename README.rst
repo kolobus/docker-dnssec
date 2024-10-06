@@ -1,3 +1,20 @@
+DN42 Modifications & misc
+################
+
+This fork adds DN42 env variable, which includes conf options essential for DN42 network: DNSSEC validation exception and .dn42 forwarders.
+
+Changes:
+
+- DN42=true will include DNSEC options required for DN42 and corresponding zones
+- Modified mkzone file to add SRV records, which is now in a separate repo
+- Changed default resolvers to CloudFlare IPv4/IPv6
+- Upgraded python3 packages to correct (new) system-wide install
+
+ToDo:
+
+- Keys permission issue (see below)
+- Validate reverse zones with CIDR notation used in DN42
+
 DNSSEC Container
 ################
 
@@ -21,6 +38,8 @@ Env Variables
 | SALT               | The salt dnssec-signzone is using to sign your zones.                                 | 7d70b91db47137cd |
 |                    | Can be obtained by ```head -c 1000 /dev/random | sha1sum | cut -b 1-16```             |                  |
 |                    | DO NOT USE THE DEFAULT SALT, THIS IS UNSECURE                                         |                  |
++--------------------+---------------------------------------------------------------------------------------+------------------+
+| DN42               | Enable DN42 named.conf options - DNSSEC exception and .dn42 zones                     | false            |
 +--------------------+---------------------------------------------------------------------------------------+------------------+
 
 Volumes

@@ -5,14 +5,18 @@ RUN apk add --no-cache bind
 RUN apk add --no-cache bind-tools
 RUN apk add --no-cache bind-dnssec-tools
 RUN apk add --no-cache haveged
-RUN pip3 install --upgrade jinja2
-RUN pip3 install --upgrade pyyaml
-RUN wget https://raw.githubusercontent.com/claudio-walser/mkzone/master/mkzone -O /mkzone
+RUN apk add --no-cache py3-jinja2
+RUN apk add --no-cache py3-yaml
+
+# mkzone
+RUN wget https://raw.githubusercontent.com/kolobus/mkzone/refs/heads/master/mkzone -O /mkzone
 RUN chmod +x /mkzone
 
 # copy config and set permissions
 COPY --chown=named:named named.conf /etc/bind/named.conf
 COPY --chown=named:named named.conf.default-zones /etc/bind/named.conf.default-zones
+COPY --chown=named:named named.conf.dn42.options /etc/bind/named.conf.dn42.options
+COPY --chown=named:named named.conf.dn42.zones /etc/bind/named.conf.dn42.zones
 COPY --chown=named:named entrypoint.sh /entrypoint.sh
 
 # make entrypoint executable
@@ -25,11 +29,14 @@ EXPOSE 5353/tcp
 EXPOSE 5353/udp
 
 # default environment variables
-ENV ALLOW_RECURSION_IP=10.0.2.0/24
-ENV FORWARDER_1=208.67.222.123
-ENV FORWARDER_2=208.67.220.123
+ENV ALLOW_RECURSION_IP=10.0.0.0/8
+ENV FORWARDER_1=1.1.1.1
+ENV FORWARDER_2=1.0.0.1
+ENV FORWARDER_3=2606:4700:4700::1111
+ENV FORWARDER_4=2606:4700:4700::1001
 ENV DNSSEC=true
 ENV SALT=7d70b91db47137cd
+ENV DN42=false
 
 USER named
 

@@ -24,6 +24,18 @@ fi
 
 sed -i -E "s|<DNSSEC>|${DNSSEC_STRING}|g" /etc/bind/named.conf
 
+DN42_OPTIONS=''
+DN42_ZONES=''
+if [ $DN42 = "true" ]
+then
+	DN42_OPTIONS="include \"/etc/bind/named.conf.dn42.options\";"
+	DN42_ZONES="include \"/etc/bind/named.conf.dn42.zones\";"
+fi
+
+sed -i -E "s|<DN42_OPTIONS>|${DN42_OPTIONS}|g" /etc/bind/named.conf
+sed -i -E "s|<DN42_ZONES>|${DN42_ZONES}|g" /etc/bind/named.conf
+
+
 mkdir -p /var/bind/keys
 mkdir -p /var/bind/zones
 mkdir -p /etc/bind/zones-enabled
